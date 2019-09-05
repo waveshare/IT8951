@@ -63,6 +63,25 @@ void LCDWriteData(uint16_t usData)
 	bcm2835_gpio_write(CS,HIGH); 
 }
 
+void LCDWriteNData2(uint8_t *data, uint32_t len)
+{
+	//Set Preamble for Write Data
+	uint16_t wPreamble	= 0x0000;
+
+	LCDWaitForReady();
+
+	bcm2835_gpio_write(CS,LOW);
+
+	bcm2835_spi_transfer(wPreamble>>8);
+	bcm2835_spi_transfer(wPreamble);
+	
+	LCDWaitForReady();
+
+	bcm2835_spi_transfern(data, len);
+	
+	bcm2835_gpio_write(CS,HIGH); 
+}
+
 void LCDWriteNData(uint16_t* pwBuf, uint32_t ulSizeWordCnt)
 {
 	uint32_t i;
@@ -435,25 +454,23 @@ void IT8951WaitForDisplayReady()
 //-----------------------------------------------------------
 void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgInfo* pstAreaImgInfo)
 {
-	uint32_t i,j;
+	uint32_t i = 0, j = 0;
 	//Source buffer address of Host
-	uint16_t* pusFrameBuf = (uint16_t*)pstLdImgInfo->ulStartFBAddr;
+	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
 
+	while (i < pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth) {
+	  //uint8_t tmp = ((pusFrameBuf[i + 1] >> 4) << 4) | pusFrameBuf[i] >> 4;
+	  //	  pusFrameBuf[j] = (pusFrameBuf[j] + 8) / 16 * 16;
+	  pusFrameBuf[j] = (pusFrameBuf[i] / 16) + (pusFrameBuf[i + 1] / 16 * 16);
+	  j += 1;
+	  i += 2;
+	}
 	//Set Image buffer(IT8951) Base address
 	IT8951SetImgBufBaseAddr(pstLdImgInfo->ulImgBufBaseAddr);
 	//Send Load Image start Cmd
 	IT8951LoadImgAreaStart(pstLdImgInfo , pstAreaImgInfo);
-	//Host Write Data
-	for(j=0;j< pstAreaImgInfo->usHeight;j++)
-	{
-		 for(i=0;i< pstAreaImgInfo->usWidth/2;i++)
-			{
-					//Write a Word(2-Bytes) for each time
-					LCDWriteData(*pusFrameBuf);
-					pusFrameBuf++;
-			}
-	}
-	//Send Load Img End Command
+
+	LCDWriteNData2(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
 	IT8951LoadImgEnd();
 }
 
@@ -757,7 +774,7 @@ void IT8951_GUI_Example()
 	IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 }
 
-void IT8951_BMP_Example(uint32_t x, uint32_t y,char *path)
+void IT8951_BMP_Example(char *path)
 {
 	IT8951LdImgInfo stLdImgInfo;
 	IT8951AreaImgInfo stAreaImgInfo;
@@ -765,14 +782,14 @@ void IT8951_BMP_Example(uint32_t x, uint32_t y,char *path)
 	EPD_Clear(0xff);
 	
 	//ÏÔÊ¾Í¼Ïñ
-	Show_bmp(x,y,path);
+	Show_bmp(0, 0, path);
 
 	IT8951WaitForDisplayReady();
 	
 	//Setting Load image information
 	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
-	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
-	stLdImgInfo.usPixelFormat    = IT8951_8BPP; 
+	stLdImgInfo.usEndianType     = IT8951_LDIMG_B_ENDIAN;
+	stLdImgInfo.usPixelFormat    = IT8951_4BPP; 
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
 	stLdImgInfo.ulImgBufBaseAddr = gulImgBufAddr;
 	//Set Load Area
@@ -782,7 +799,7 @@ void IT8951_BMP_Example(uint32_t x, uint32_t y,char *path)
 	stAreaImgInfo.usHeight = gstI80DevInfo.usPanelH;
 	
 	//Load Image from Host to IT8951 Image Buffer
-	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);//Display function 2
+	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform 
 	IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 }

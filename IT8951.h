@@ -11,7 +11,7 @@
 #define CS 				8
 #define HRDY 	        24
 #define RESET 	        17
-#define VCOM			1500 //e.g. -1.53 = 1530 = 0x5FA
+#define VCOM			1610 //e.g. -1.53 = 1530 = 0x5FA
 
 //prototype of structure
 //structure prototype 1
@@ -133,7 +133,7 @@ void IT8951DisplayExample2(void);
 void IT8951Display1bppExample2(void);
 void IT8951DisplayExample3(void);
 void IT8951_GUI_Example(void);
-void IT8951_BMP_Example(uint32_t x, uint32_t y,char *path);
+void IT8951_BMP_Example(char *path);
 
 uint16_t IT8951ReadReg(uint16_t usRegAddr);
 void IT8951SetImgBufBaseAddr(uint32_t ulImgBufAddr);
