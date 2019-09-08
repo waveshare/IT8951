@@ -25,12 +25,12 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
 
 
     /* initialize stuff */
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
     if (!png_ptr)
         abort_("[read_png_file] png_create_read_struct failed");
 
-    info_ptr = png_create_info_struct(png_ptr);
+    png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
         abort_("[read_png_file] png_create_info_struct failed");
 
