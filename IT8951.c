@@ -595,13 +595,10 @@ void IT8951_Cancel()
 
 void IT8951_Display4BppBuffer(uint8_t *buffer)
 {
-    EPD_Clear(0xff);
-        IT8951WaitForDisplayReady();
-    return;
 	IT8951LdImgInfo stLdImgInfo;
 	IT8951AreaImgInfo stAreaImgInfo;
 	
-
+	EPD_Clear(0xff);
 	//ÏÔÊ¾Í¼Ïñ
 
 	IT8951WaitForDisplayReady();
@@ -622,5 +619,5 @@ void IT8951_Display4BppBuffer(uint8_t *buffer)
 	//Load Image from Host to IT8951 Image Buffer
 	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform 
-	IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
+//    IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 }
