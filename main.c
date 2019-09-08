@@ -87,7 +87,7 @@ int main (int argc, char *argv[])
     png_byte bit_depth;
     int width, height;
 
-    for (int i = 0; i < 10) {
+    for (int i = 0; i < 10; ++i) {
         printf("read file start\n");
         uint8_t *buffer = read_png_file(argv[i % 2 + 1], &width, &height, &color_type, &bit_depth, buffer_to_write);
         printf("read file end\n");
