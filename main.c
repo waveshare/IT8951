@@ -90,7 +90,7 @@ int main (int argc, char *argv[])
     png_byte bit_depth;
     int width, height;
 
-    uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type_ptr, &bit_depth);
+    uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type, &bit_depth);
 
     printf("begin, size: %d %d %d\n", width, height, bit_depth);
 	IT8951_Display4BppBuffer(buffer);
