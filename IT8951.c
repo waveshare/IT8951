@@ -563,7 +563,7 @@ uint8_t *IT8951_Init()
 	//Get Device Info
 	GetIT8951SystemInfo(&gstI80DevInfo);
 	
-	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH);
+	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2);
 	if (!gpFrameBuf)
 	{
 		perror("malloc error!\n");
