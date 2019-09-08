@@ -2,12 +2,6 @@
 
 int main (int argc, char *argv[])
 {
-	/*
-	printf("ReadReg = 0x%x\n",IT8951ReadReg(LISAR));
-	IT8951WriteReg(LISAR,0x1234);
-	printf("ReadReg = 0x%x\n",IT8951ReadReg(LISAR));
-	*/
-
 	if(IT8951_Init())
 	{
 		printf("IT8951_Init error \n");
@@ -23,7 +17,7 @@ int main (int argc, char *argv[])
 
 	printf("begin");
     uint8_t *buffer = (uint8_t*)malloc(2000*1500/2);
-    memset(buffer, 2000*1500/2, 0x00);
+    memset(buffer, 0x00, 2000*1500/2);
 	IT8951_Display4BppBuffer(buffer);
 	printf("end");
 
