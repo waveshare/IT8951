@@ -127,7 +127,7 @@ typedef struct
 
 uint8_t* IT8951_Init(void);
 void IT8951_Cancel(void);
-void IT8951_Display4BppBuffer(uint8_t *buffer);
+void IT8951_Display4BppBuffer();
 
 #endif
 

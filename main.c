@@ -91,7 +91,7 @@ int main (int argc, char *argv[])
     uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type, &bit_depth, buffer_to_write);
     printf("read file end\n");
     printf("update screen start\n");
-    IT8951_Display4BppBuffer(buffer);
+    IT8951_Display4BppBuffer();
     printf("update screen end\n");
 
 	
