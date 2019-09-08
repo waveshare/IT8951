@@ -74,7 +74,7 @@ void LCDWriteNData2(uint8_t *data, uint32_t len)
 
 //    LCDWaitForReady();
 
-	bcm2835_gpio_write(CS,LOW);
+//    bcm2835_gpio_write(CS,LOW);
 
 //    bcm2835_spi_transfer(0);
 //    bcm2835_spi_transfer(0);
@@ -82,7 +82,7 @@ void LCDWriteNData2(uint8_t *data, uint32_t len)
 	bcm2835_spi_transfern((char*)data, len);
 //    LCDWaitForReady();
 
-	bcm2835_gpio_write(CS,HIGH); 
+//    bcm2835_gpio_write(CS,HIGH); 
 }
 
 void LCDWriteNData(uint16_t* pwBuf, uint32_t ulSizeWordCnt)
@@ -465,9 +465,7 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	//Send Load Image start Cmd
 	IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
-    printf("buf start\n");
 	LCDWriteNData2(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
-        printf("buf end\n");
 	IT8951LoadImgEnd();
 }
 
