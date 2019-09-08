@@ -1,13 +1,9 @@
 #include "IT8951.h"
 #include <png.h>
 
-void abort_(const char * s, ...)
+void abort_(const char * s)
 {
-    va_list args;
-    va_start(args, s);
-    vfprintf(stderr, s, args);
-    fprintf(stderr, "\n");
-    va_end(args);
+    printf("%s\n", s);
     abort();
 }
 
@@ -18,10 +14,10 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
     /* open file and test for it being a png */
     FILE *fp = fopen(file_name, "rb");
     if (!fp)
-        abort_("[read_png_file] File %s could not be opened for reading", file_name);
+        abort_("[read_png_file] File %s could not be opened for reading");
     fread(header, 1, 8, fp);
     if (png_sig_cmp(header, 0, 8))
-        abort_("[read_png_file] File %s is not recognized as a PNG file", file_name);
+        abort_("[read_png_file] File %s is not recognized as a PNG file");
 
 
     /* initialize stuff */
