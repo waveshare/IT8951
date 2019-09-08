@@ -596,6 +596,7 @@ void IT8951_Cancel()
 void IT8951_Display4BppBuffer(uint8_t *buffer)
 {
     EPD_Clear(0xff);
+        IT8951WaitForDisplayReady();
     return;
 	IT8951LdImgInfo stLdImgInfo;
 	IT8951AreaImgInfo stAreaImgInfo;
