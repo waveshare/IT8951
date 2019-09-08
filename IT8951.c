@@ -70,19 +70,19 @@ void LCDWriteData(uint16_t usData)
 void LCDWriteNData(uint8_t *data, uint32_t len)
 {
 	//Set Preamble for Write Data
-//    uint16_t wPreamble    = 0x0000;
+    uint16_t wPreamble    = 0x0000;
 
-//    LCDWaitForReady();
+    LCDWaitForReady();
 
-//    bcm2835_gpio_write(CS,LOW);
+    bcm2835_gpio_write(CS,LOW);
 
-//    bcm2835_spi_transfer(0);
-//    bcm2835_spi_transfer(0);
+    bcm2835_spi_transfer(0);
+    bcm2835_spi_transfer(0);
 
 	bcm2835_spi_transfern((char*)data, len);
-//    LCDWaitForReady();
+    LCDWaitForReady();
 
-//    bcm2835_gpio_write(CS,HIGH);
+    bcm2835_gpio_write(CS,HIGH);
 }
 
 //-----------------------------------------------------------

@@ -93,6 +93,7 @@ int main (int argc, char *argv[])
         printf("read file end\n");
         printf("update screen start\n");
         IT8951_Display4BppBuffer();
+        
         printf("update screen end\n");
     }
 
