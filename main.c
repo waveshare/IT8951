@@ -22,7 +22,9 @@ int main (int argc, char *argv[])
 	}
 
 	printf("begin");
-	IT8951_BMP_Example(argv[1]);
+    uint8_t *buffer = (uint8_t*)malloc(2000*1500/2);
+    memset(buffer, 2000*1500/2, 0x00);
+	IT8951_Display4BppBuffer(buffer);
 	printf("end");
 
 	

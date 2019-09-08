@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "miniGUI.h"
 
 #define CS 				8
 #define HRDY 	        24
