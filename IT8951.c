@@ -212,49 +212,6 @@ void IT8951WriteReg(uint16_t usRegAddr,uint16_t usValue)
 	LCDWriteData(usValue);
 }
 
-//-----------------------------------------------------------
-//Host Cmd 6---MEM_BST_RD_T
-//-----------------------------------------------------------
-void IT8951MemBurstReadTrigger(uint32_t ulMemAddr , uint32_t ulReadSize)
-{
-    uint16_t usArg[4];
-    //Setting Arguments for Memory Burst Read
-    usArg[0] = (uint16_t)(ulMemAddr & 0x0000FFFF); //addr[15:0]
-    usArg[1] = (uint16_t)( (ulMemAddr >> 16) & 0x0000FFFF ); //addr[25:16]
-    usArg[2] = (uint16_t)(ulReadSize & 0x0000FFFF); //Cnt[15:0]
-    usArg[3] = (uint16_t)( (ulReadSize >> 16) & 0x0000FFFF ); //Cnt[25:16]
-    //Send Cmd and Arg
-    LCDSendCmdArg(IT8951_TCON_MEM_BST_RD_T , usArg , 4);
-}
-//-----------------------------------------------------------
-//Host Cmd 7---MEM_BST_RD_S
-//-----------------------------------------------------------
-void IT8951MemBurstReadStart()
-{
-    LCDWriteCmdCode(IT8951_TCON_MEM_BST_RD_S);
-}
-//-----------------------------------------------------------
-//Host Cmd 8---MEM_BST_WR
-//-----------------------------------------------------------
-void IT8951MemBurstWrite(uint32_t ulMemAddr , uint32_t ulWriteSize)
-{
-    uint16_t usArg[4];
-    //Setting Arguments for Memory Burst Write
-    usArg[0] = (uint16_t)(ulMemAddr & 0x0000FFFF); //addr[15:0]
-    usArg[1] = (uint16_t)( (ulMemAddr >> 16) & 0x0000FFFF ); //addr[25:16]
-    usArg[2] = (uint16_t)(ulWriteSize & 0x0000FFFF); //Cnt[15:0]
-    usArg[3] = (uint16_t)( (ulWriteSize >> 16) & 0x0000FFFF ); //Cnt[25:16]
-    //Send Cmd and Arg
-    LCDSendCmdArg(IT8951_TCON_MEM_BST_WR , usArg , 4);
-}
-//-----------------------------------------------------------
-//Host Cmd 9---MEM_BST_END
-//-----------------------------------------------------------
-void IT8951MemBurstEnd(void)
-{
-    LCDWriteCmdCode(IT8951_TCON_MEM_BST_END);
-}
-
 uint16_t IT8951GetVCOM(void)
 {
 	uint16_t vcom;
@@ -274,71 +231,6 @@ void IT8951SetVCOM(uint16_t vcom)
 	LCDWriteData(vcom);
 }
 
-//-----------------------------------------------------------
-//Example of Memory Burst Write
-//-----------------------------------------------------------
-// ****************************************************************************************
-// Function name: IT8951MemBurstWriteProc( )
-//
-// Description:
-//   IT8951 Burst Write procedure
-//      
-// Arguments:
-//      uint32_t ulMemAddr: IT8951 Memory Target Address
-//      uint32_t ulWriteSize: Write Size (Unit: Word)
-//      uint8_t* pDestBuf - Buffer of Sent data
-// Return Values:
-//   NULL.
-// Note:
-//
-// ****************************************************************************************
-void IT8951MemBurstWriteProc(uint32_t ulMemAddr , uint32_t ulWriteSize, uint16_t* pSrcBuf )
-{
-    
-    uint32_t i;
- 
-    //Send Burst Write Start Cmd and Args
-    IT8951MemBurstWrite(ulMemAddr , ulWriteSize);
- 
-    //Burst Write Data
-    for(i=0;i<ulWriteSize;i++)
-    {
-        LCDWriteData(pSrcBuf[i]);
-    }
- 
-    //Send Burst End Cmd
-    IT8951MemBurstEnd();
-}
-
-// ****************************************************************************************
-// Function name: IT8951MemBurstReadProc( )
-//
-// Description:
-//   IT8951 Burst Read procedure
-//      
-// Arguments:
-//      uint32_t ulMemAddr: IT8951 Read Memory Address
-//      uint32_t ulReadSize: Read Size (Unit: Word)
-//      uint8_t* pDestBuf - Buffer for storing Read data
-// Return Values:
-//   NULL.
-// Note:
-//
-// ****************************************************************************************
-void IT8951MemBurstReadProc(uint32_t ulMemAddr , uint32_t ulReadSize, uint16_t* pDestBuf )
-{
-    //Send Burst Read Start Cmd and Args
-    IT8951MemBurstReadTrigger(ulMemAddr , ulReadSize);
-          
-    //Burst Read Fire
-    IT8951MemBurstReadStart();
-    
-    //Burst Read Request for SPI interface only
-    LCDReadNData(pDestBuf, ulReadSize);
-
-    //Send Burst End Cmd
-    IT8951MemBurstEnd(); //the same with IT8951MemBurstEnd()
-}
 
 //-----------------------------------------------------------
 //Host Cmd 10---LD_IMG

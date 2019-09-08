@@ -87,12 +87,14 @@ int main (int argc, char *argv[])
     png_byte bit_depth;
     int width, height;
 
+    for (int i = 0; i < 10) {
         printf("read file start\n");
-    uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type, &bit_depth, buffer_to_write);
-    printf("read file end\n");
-    printf("update screen start\n");
-    IT8951_Display4BppBuffer();
-    printf("update screen end\n");
+        uint8_t *buffer = read_png_file(argv[i % 2 + 1], &width, &height, &color_type, &bit_depth, buffer_to_write);
+        printf("read file end\n");
+        printf("update screen start\n");
+        IT8951_Display4BppBuffer();
+        printf("update screen end\n");
+    }
 
 	
 	IT8951_Cancel();
