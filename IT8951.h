@@ -125,7 +125,7 @@ typedef struct
 #define MCSR (MCSR_BASE_ADDR  + 0x0000)
 #define LISAR (MCSR_BASE_ADDR + 0x0008)
 
-uint8_t IT8951_Init(void);
+uint8_t* IT8951_Init(void);
 void IT8951_Cancel(void);
 void IT8951_Display4BppBuffer(uint8_t *buffer);
 

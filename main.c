@@ -7,7 +7,7 @@ void abort_(const char * s)
     abort();
 }
 
-uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *color_type_ptr, png_byte *bit_depth_ptr)
+uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *color_type_ptr, png_byte *bit_depth_ptr, char *buffer_to_write)
 {
     char header[8];    // 8 is the maximum size that can be checked
 
@@ -52,7 +52,7 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
 
 
     png_bytep * row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * *height_ptr);
-    png_bytep all_bytes = (png_bytep)malloc(sizeof(png_byte) * *height_ptr * *width_ptr);
+    png_bytep all_bytes = (png_bytep)buffer_to_write;
     int row_size = png_get_rowbytes(png_ptr,info_ptr);
     for (int y=0; y<*height_ptr; y++)
         row_pointers[y] = all_bytes + (y * row_size);
@@ -68,7 +68,8 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
 
 int main (int argc, char *argv[])
 {
-	if(IT8951_Init())
+    char *buffer_to_write;
+	if(buffer_to_write = IT8951_Init())
 	{
 		printf("IT8951_Init error \n");
 		return 1;
@@ -85,7 +86,7 @@ int main (int argc, char *argv[])
     png_byte bit_depth;
     int width, height;
 
-    uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type, &bit_depth);
+    uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type, &bit_depth, buffer_to_write);
 
     printf("begin, size: %d %d %d\n", width, height, bit_depth);
 	IT8951_Display4BppBuffer(buffer);

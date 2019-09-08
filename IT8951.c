@@ -535,12 +535,12 @@ void IT8951DisplayAreaBuf(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH
 //-----------------------------------------------------------
 //Test function 1---Software Initial
 //-----------------------------------------------------------
-uint8_t IT8951_Init()
+uint8_t *IT8951_Init()
 {
 	if (!bcm2835_init()) 
 	{
 		printf("bcm2835_init error \n");
-		return 1;
+		return NULL;
 	}
 	
 	bcm2835_spi_begin();
@@ -563,11 +563,11 @@ uint8_t IT8951_Init()
 	//Get Device Info
 	GetIT8951SystemInfo(&gstI80DevInfo);
 	
-	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH);
+	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2);
 	if (!gpFrameBuf)
 	{
 		perror("malloc error!\n");
-		return 1;
+		return NULL;
 	}
 	
  	gulImgBufAddr = gstI80DevInfo.usImgBufAddrL | (gstI80DevInfo.usImgBufAddrH << 16);
@@ -581,7 +581,7 @@ uint8_t IT8951_Init()
 		printf("VCOM = -%.02fV\n",(float)IT8951GetVCOM()/1000);
 	}
 	
-	return 0;
+	return gpFrameBuf;
 }
 
 void IT8951_Cancel()
@@ -599,7 +599,6 @@ void IT8951_Display4BppBuffer(uint8_t *buffer)
 	IT8951AreaImgInfo stAreaImgInfo;
 	
 	EPD_Clear(0xff);
-    printf("cleared");
 	//ÏÔÊ¾Í¼Ïñ
 
 	IT8951WaitForDisplayReady();
@@ -616,7 +615,7 @@ void IT8951_Display4BppBuffer(uint8_t *buffer)
 	stAreaImgInfo.usWidth  = gstI80DevInfo.usPanelW;
 	stAreaImgInfo.usHeight = gstI80DevInfo.usPanelH;
 
-    memcpy(gpFrameBuf, buffer, gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2);
+//    memcpy(gpFrameBuf, buffer, gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2);
 	//Load Image from Host to IT8951 Image Buffer
 	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform 
