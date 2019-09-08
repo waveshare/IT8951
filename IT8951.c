@@ -606,7 +606,7 @@ void IT8951_Display4BppBuffer(uint8_t *buffer)
 	
 	//Setting Load image information
 	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
-	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
+	stLdImgInfo.usEndianType     = IT8951_LDIMG_B_ENDIAN;
 	stLdImgInfo.usPixelFormat    = IT8951_4BPP; 
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
 	stLdImgInfo.ulImgBufBaseAddr = gulImgBufAddr;
