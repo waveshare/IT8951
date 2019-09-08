@@ -69,7 +69,7 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
 int main (int argc, char *argv[])
 {
     char *buffer_to_write;
-	if(buffer_to_write = IT8951_Init())
+	if(!(buffer_to_write = IT8951_Init()))
 	{
 		printf("IT8951_Init error \n");
 		return 1;
