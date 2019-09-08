@@ -7,7 +7,7 @@ void abort_(const char * s)
     abort();
 }
 
-uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *color_type_ptr, png_byte *bit_depth_ptr, char *buffer_to_write)
+uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *color_type_ptr, png_byte *bit_depth_ptr, uint8_t *buffer_to_write)
 {
     char header[8];    // 8 is the maximum size that can be checked
 
@@ -68,13 +68,14 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
 
 int main (int argc, char *argv[])
 {
-    char *buffer_to_write;
+    uint8_t *buffer_to_write;
+    printf("init start\n");
 	if(!(buffer_to_write = IT8951_Init()))
 	{
 		printf("IT8951_Init error \n");
 		return 1;
 	}
-	
+    printf("init end\n");
 	
 	if (argc != 2)
 	{
@@ -86,11 +87,12 @@ int main (int argc, char *argv[])
     png_byte bit_depth;
     int width, height;
 
+        printf("read file start\n");
     uint8_t *buffer = read_png_file(argv[1], &width, &height, &color_type, &bit_depth, buffer_to_write);
-
-    printf("begin, size: %d %d %d\n", width, height, bit_depth);
+printf("read file end\n");
+    printf("update screen start\n");
 	IT8951_Display4BppBuffer(buffer);
-	printf("end");
+    printf("update screen end\n");
 
 	
 	IT8951_Cancel();
