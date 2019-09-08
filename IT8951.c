@@ -458,17 +458,9 @@ void IT8951WaitForDisplayReady()
 //-----------------------------------------------------------
 void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgInfo* pstAreaImgInfo)
 {
-	uint32_t i = 0, j = 0;
 	//Source buffer address of Host
 	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
 
-	while (i < pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth) {
-	  //uint8_t tmp = ((pusFrameBuf[i + 1] >> 4) << 4) | pusFrameBuf[i] >> 4;
-	  //	  pusFrameBuf[j] = (pusFrameBuf[j] + 8) / 16 * 16;
-	  pusFrameBuf[j] = (pusFrameBuf[i] / 16) + (pusFrameBuf[i + 1] / 16 * 16);
-	  j += 1;
-	  i += 2;
-	}
 	//Set Image buffer(IT8951) Base address
 	IT8951SetImgBufBaseAddr(pstLdImgInfo->ulImgBufBaseAddr);
 	//Send Load Image start Cmd
@@ -617,7 +609,7 @@ void IT8951_Display4BppBuffer(uint8_t *buffer)
 	stLdImgInfo.usEndianType     = IT8951_LDIMG_B_ENDIAN;
 	stLdImgInfo.usPixelFormat    = IT8951_4BPP; 
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
-	stLdImgInfo.ulImgBufBaseAddr = buffer;
+	stLdImgInfo.ulImgBufBaseAddr = (uint32_t)buffer;
 	//Set Load Area
 	stAreaImgInfo.usX      = 0;
 	stAreaImgInfo.usY      = 0;
