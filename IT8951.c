@@ -489,7 +489,7 @@ uint8_t *IT8951_Init()
 	bcm2835_gpio_write(RESET, HIGH);
 
 	//Get Device Info
-//    GetIT8951SystemInfo(&gstI80DevInfo);
+    GetIT8951SystemInfo(&gstI80DevInfo);
 
 	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2);
 	if (!gpFrameBuf)
