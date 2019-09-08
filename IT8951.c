@@ -76,9 +76,6 @@ void LCDWriteNData(uint8_t *data, uint32_t len)
 
     bcm2835_gpio_write(CS,LOW);
 
-//    bcm2835_spi_transfer(0);
-//    bcm2835_spi_transfer(0);
-
 	bcm2835_spi_transfern((char*)data, len + 2);
     LCDWaitForReady();
 
@@ -383,7 +380,7 @@ uint8_t *IT8951_Init()
 	//Get Device Info
     GetIT8951SystemInfo(&gstI80DevInfo);
 
-	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2);
+	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH / 2 + 2);
 	if (!gpFrameBuf)
 	{
 		perror("malloc error!\n");
@@ -401,7 +398,7 @@ uint8_t *IT8951_Init()
 		printf("VCOM = -%.02fV\n",(float)IT8951GetVCOM()/1000);
 	}
 	
-	return gpFrameBuf;
+	return gpFrameBuf + 2;
 }
 
 void IT8951_Cancel()
