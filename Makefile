@@ -3,7 +3,7 @@ CC=gcc
 TARGET=IT8951
 
 $(TARGET):$(SRCS)
-	$(CC) -O3 -Wall $(SRCS) -o $(TARGET) -lbcm2835
+	$(CC) -O3 -Wall $(SRCS) -o $(TARGET) -lbcm2835 -lpng
 	
 clean:
 	rm -f $(TARGET)
