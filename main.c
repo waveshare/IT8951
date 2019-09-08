@@ -77,7 +77,7 @@ int main (int argc, char *argv[])
 	}
     printf("init end\n");
 	
-	if (argc != 2)
+	if (argc >= 2)
 	{
 		printf("Error: argc!=2.\n");
 		exit(1);
