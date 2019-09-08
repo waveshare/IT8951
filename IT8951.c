@@ -465,7 +465,9 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	//Send Load Image start Cmd
 	IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
+    printf("buf start\n");
 	LCDWriteNData2(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
+        printf("buf end\n");
 	IT8951LoadImgEnd();
 }
 
@@ -482,53 +484,6 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 	LCDWriteData(usW);
 	LCDWriteData(usH);
 	LCDWriteData(usDpyMode);
-}
-
-//Display Area with bitmap on EPD
-//-----------------------------------------------------------
-// Display Function 4---for Display Area for 1-bpp mode format
-//   the bitmap(1bpp) mode will be enable when Display
-//   and restore to Default setting (disable) after displaying finished
-//-----------------------------------------------------------
-void IT8951DisplayArea1bpp(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, uint16_t usDpyMode, uint8_t ucBGGrayVal, uint8_t ucFGGrayVal)
-{
-    //Set Display mode to 1 bpp mode - Set 0x18001138 Bit[18](0x1800113A Bit[2])to 1
-    IT8951WriteReg(UP1SR+2, IT8951ReadReg(UP1SR+2) | (1<<2));
-    
-    //Set BitMap color table 0 and 1 , => Set Register[0x18001250]:
-    //Bit[7:0]: ForeGround Color(G0~G15)  for 1
-    //Bit[15:8]:Background Color(G0~G15)  for 0
-    IT8951WriteReg(BGVR, (ucBGGrayVal<<8) | ucFGGrayVal);
-    
-    //Display
-    IT8951DisplayArea( usX, usY, usW, usH, usDpyMode);
-    IT8951WaitForDisplayReady();
-    
-    //Restore to normal mode
-    IT8951WriteReg(UP1SR+2, IT8951ReadReg(UP1SR+2) & ~(1<<2));
-}
-
-//-------------------------------------------------------------------------------------------------------------
-// 	Command - 0x0037 for Display Base addr by User 
-//  uint32_t ulDpyBufAddr - Host programmer need to indicate the Image buffer address of IT8951
-//                                         In current case, there is only one image buffer in IT8951 so far.
-//                                         So Please set the Image buffer address you got  in initial stage.
-//                                         (gulImgBufAddr by Get device information 0x0302 command)
-//
-//-------------------------------------------------------------------------------------------------------------
-void IT8951DisplayAreaBuf(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, uint16_t usDpyMode, uint32_t ulDpyBufAddr)
-{
-    //Send I80 Display Command (User defined command of IT8951)
-    LCDWriteCmdCode(USDEF_I80_CMD_DPY_BUF_AREA); //0x0037
-    
-    //Write arguments
-    LCDWriteData(usX);
-    LCDWriteData(usY);
-    LCDWriteData(usW);
-    LCDWriteData(usH);
-    LCDWriteData(usDpyMode);
-    LCDWriteData((uint16_t)ulDpyBufAddr);       //Display Buffer Base address[15:0]
-    LCDWriteData((uint16_t)(ulDpyBufAddr>>16)); //Display Buffer Base address[26:16]
 }
 
 //-----------------------------------------------------------
