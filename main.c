@@ -55,7 +55,7 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
     png_bytep all_bytes = (png_bytep)malloc(sizeof(png_byte) * *height_ptr * *width_ptr);
     int row_size = png_get_rowbytes(png_ptr,info_ptr);
     for (int y=0; y<*height_ptr; y++)
-        row_pointers[y] = all_bytes + (y * *width_ptr);
+        row_pointers[y] = all_bytes + (y * row_size);
 
     png_read_image(png_ptr, row_pointers);
 
