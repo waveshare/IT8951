@@ -53,9 +53,11 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
 
     png_bytep * row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * *height_ptr);
     png_bytep all_bytes = (png_bytep)buffer_to_write;
+    all_bytes[0] = 0;
+    all_bytes[1] = 0;
     int row_size = png_get_rowbytes(png_ptr,info_ptr);
     for (int y=0; y<*height_ptr; y++)
-        row_pointers[y] = all_bytes + (y * row_size);
+        row_pointers[y] = 2 + all_bytes + (y * row_size);
 
     png_read_image(png_ptr, row_pointers);
 
@@ -93,7 +95,7 @@ int main (int argc, char *argv[])
         printf("read file end\n");
         printf("update screen start\n");
         IT8951_Display4BppBuffer();
-        
+
         printf("update screen end\n");
     }
 

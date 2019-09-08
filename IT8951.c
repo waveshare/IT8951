@@ -79,7 +79,7 @@ void LCDWriteNData(uint8_t *data, uint32_t len)
 //    bcm2835_spi_transfer(0);
 //    bcm2835_spi_transfer(0);
 
-	bcm2835_spi_transfern((char*)data, len);
+	bcm2835_spi_transfern((char*)data, len + 2);
     LCDWaitForReady();
 
     bcm2835_gpio_write(CS,HIGH);
