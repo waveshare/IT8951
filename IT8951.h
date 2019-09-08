@@ -128,28 +128,7 @@ typedef struct
 
 uint8_t IT8951_Init(void);
 void IT8951_Cancel(void);
-void IT8951DisplayExample(void);
-void IT8951DisplayExample2(void);
-void IT8951Display1bppExample2(void);
-void IT8951DisplayExample3(void);
-void IT8951_GUI_Example(void);
-void IT8951_BMP_Example(char *path);
-
-uint16_t IT8951ReadReg(uint16_t usRegAddr);
-void IT8951SetImgBufBaseAddr(uint32_t ulImgBufAddr);
-void LCDWaitForReady(void);
-void GetIT8951SystemInfo(void* pBuf);
-void gpio_i80_16b_cmd_out(uint16_t usCmd);
-void GPIO_Configuration_Out(void);
-void GPIO_Configuration_In(void);
-
-void IT8951DisplayClear(void);
-
-//uint16_t IT8951ReadReg(uint16_t usRegAddr);
-void IT8951WriteReg(uint16_t usRegAddr,uint16_t usValue);
-
-uint16_t IT8951GetVCOM(void);
-void IT8951SetVCOM(uint16_t vcom);
+void IT8951_Display4BppBuffer(uint8_t *buffer);
 
 #endif
 

@@ -1,6 +1,4 @@
 #include <string.h>
-#include "miniGUI.h"
-#include "AsciiLib.h"
 
 extern IT8951DevInfo gstI80DevInfo;
 extern uint8_t* gpFrameBuf; //Host Source Frame buffer
