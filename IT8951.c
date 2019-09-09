@@ -333,16 +333,6 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 	LCDWriteCmdCode(USDEF_I80_CMD_DPY_AREA); //0x0034
 	//Write arguments
 
-//    uint8_t buffer[14] = {0, 0, usX >> 8, usX,
-//                      0, 0, usY >> 8, usY,
-//                      usW >> 8, usW,
-//                      usH >> 8, usH,
-//        usDpyMode >> 8, usDpyMode};
-
-//    LCDWaitForReady();
-
-//    LCDWriteNData(buffer, 8);
-
     LCDWriteData(usX);
     LCDWriteData(usY);
     LCDWriteData(usW);
@@ -436,5 +426,5 @@ void IT8951_Display4BppBuffer()
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform 
     IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 
-    IT8951WaitForDisplayReady();
+//    IT8951WaitForDisplayReady();
 }
