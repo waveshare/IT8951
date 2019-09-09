@@ -341,7 +341,7 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 
     LCDWaitForReady();
 
-    LCDWriteNData(buffer, 18);
+    LCDWriteNData(buffer, 10);
 
 //    LCDWriteData(usX);
 //    LCDWriteData(usY);
