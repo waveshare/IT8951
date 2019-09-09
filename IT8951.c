@@ -145,10 +145,10 @@ void LCDSendCmdArg(uint16_t usCmdCode,uint16_t* pArg, uint16_t usNumArg)
      LCDWriteCmdCode(usCmdCode);
      //Send Data
     LCDWriteNData((char*)pArg, usNumArg * 2);
-     for(i=0;i<usNumArg;i++)
-     {
-         LCDWriteData(pArg[i]);
-     }
+//     for(i=0;i<usNumArg;i++)
+//     {
+//         LCDWriteData(pArg[i]);
+//     }
 }
 
 //-----------------------------------------------------------
