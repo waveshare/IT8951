@@ -25,7 +25,7 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 	//Set Preamble for Write Command
 	uint16_t wPreamble = 0x6000; 
 	
-//    LCDWaitForReady();
+    LCDWaitForReady();
 
 	bcm2835_gpio_write(CS,LOW);
 
