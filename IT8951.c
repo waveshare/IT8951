@@ -49,7 +49,7 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 //-----------------------------------------------------------
 void LCDWriteData(uint16_t usData)
 {
-//    LCDWaitForReady();
+    LCDWaitForReady();
 
 	bcm2835_gpio_write(CS,LOW);
 
@@ -322,7 +322,8 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
     clock_t t;
     t = clock();
 
-    IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
+    IT8951LoadImgStart(pstLdImgInfo);
+//    IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
     t = clock() - t;
     double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
