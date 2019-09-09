@@ -317,17 +317,17 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
 
 	//Send Load Image start Cmd
-    IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
+
 
     clock_t t;
     t = clock();
 
-        LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
+    IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
     t = clock() - t;
     double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
 
-
+    LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
     printf("LCDWriteNData took %f seconds to execute \n", time_taken);
 	IT8951LoadImgEnd();
 }
