@@ -14,12 +14,7 @@ void EPD_Clear(uint8_t Color)
 //-----------------------------------------------------------
 void LCDWaitForReady()
 {
-    return;
-	uint8_t ulData = bcm2835_gpio_lev(HRDY);
-	while(ulData == 0)
-	{
-		ulData = bcm2835_gpio_lev(HRDY);
-	}
+    while(bcm2835_gpio_lev(HRDY) == 0);
 }
 
 //-----------------------------------------------------------
