@@ -340,6 +340,9 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
     LCDWriteData(usDpyMode);
 }
 
+IT8951LdImgInfo stLdImgInfo;
+IT8951AreaImgInfo stAreaImgInfo;
+
 //-----------------------------------------------------------
 //Test function 1---Software Initial
 //-----------------------------------------------------------
@@ -388,7 +391,20 @@ uint8_t *IT8951_Init()
 		IT8951SetVCOM(VCOM);
 		printf("VCOM = -%.02fV\n",(float)IT8951GetVCOM()/1000);
 	}
-	
+
+
+    //Setting Load image information
+    stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+    stLdImgInfo.usEndianType     = IT8951_LDIMG_B_ENDIAN;
+    stLdImgInfo.usPixelFormat    = IT8951_4BPP;
+    stLdImgInfo.usRotate         = IT8951_ROTATE_0;
+    stLdImgInfo.ulImgBufBaseAddr = gulImgBufAddr;
+    //Set Load Area
+    stAreaImgInfo.usX      = 0;
+    stAreaImgInfo.usY      = 0;
+    stAreaImgInfo.usWidth  = gstI80DevInfo.usPanelW;
+    stAreaImgInfo.usHeight = gstI80DevInfo.usPanelH;
+
 	return gpFrameBuf + 2;
 }
 
@@ -403,24 +419,6 @@ void IT8951_Cancel()
 
 void IT8951_Display4BppBuffer()
 {
-	IT8951LdImgInfo stLdImgInfo;
-	IT8951AreaImgInfo stAreaImgInfo;
-	
-//    EPD_Clear(0xff);
-	//ÏÔÊ¾Í¼Ïñ
-	
-	//Setting Load image information
-	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
-	stLdImgInfo.usEndianType     = IT8951_LDIMG_B_ENDIAN;
-	stLdImgInfo.usPixelFormat    = IT8951_4BPP; 
-	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
-	stLdImgInfo.ulImgBufBaseAddr = gulImgBufAddr;
-	//Set Load Area
-	stAreaImgInfo.usX      = 0;
-	stAreaImgInfo.usY      = 0;
-	stAreaImgInfo.usWidth  = gstI80DevInfo.usPanelW;
-	stAreaImgInfo.usHeight = gstI80DevInfo.usPanelH;
-
 	//Load Image from Host to IT8951 Image Buffer
 	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform 
