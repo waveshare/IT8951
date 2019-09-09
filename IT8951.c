@@ -56,7 +56,7 @@ void LCDWriteData(uint16_t usData)
 
 	bcm2835_gpio_write(CS,LOW);
 
-    uint8_t buffer[4] = [0, 0, usData >> 8, usData];
+    uint8_t buffer[4] = {0, 0, usData >> 8, usData};
 
     bcm2835_spi_transfern((char*)buffer, 4);
 //    bcm2835_spi_transfer(wPreamble>>8);
