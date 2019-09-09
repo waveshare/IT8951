@@ -49,7 +49,7 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 //-----------------------------------------------------------
 void LCDWriteData(uint16_t usData)
 {
-    LCDWaitForReady();
+//    LCDWaitForReady();
 
 	bcm2835_gpio_write(CS,LOW);
 
@@ -333,18 +333,18 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 	LCDWriteCmdCode(USDEF_I80_CMD_DPY_AREA); //0x0034
 	//Write arguments
 
-    uint8_t buffer[14] = {0, 0, usX >> 8, usX,
-                      0, 0, usY >> 8, usY,
-                      usW >> 8, usW,
-                      usH >> 8, usH,
-        usDpyMode >> 8, usDpyMode};
+//    uint8_t buffer[14] = {0, 0, usX >> 8, usX,
+//                      0, 0, usY >> 8, usY,
+//                      usW >> 8, usW,
+//                      usH >> 8, usH,
+//        usDpyMode >> 8, usDpyMode};
 
 //    LCDWaitForReady();
 
-    LCDWriteNData(buffer, 8);
+//    LCDWriteNData(buffer, 8);
 
-//    LCDWriteData(usX);
-//    LCDWriteData(usY);
+    LCDWriteData(usX);
+    LCDWriteData(usY);
     LCDWriteData(usW);
     LCDWriteData(usH);
     LCDWriteData(usDpyMode);
