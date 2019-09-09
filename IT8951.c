@@ -144,7 +144,16 @@ void LCDSendCmdArg(uint16_t usCmdCode,uint16_t* pArg, uint16_t usNumArg)
      //Send Cmd code
      LCDWriteCmdCode(usCmdCode);
      //Send Data
-    LCDWriteNData((char*)pArg, usNumArg * 2 - 2);
+//    LCDWriteNData((char*)pArg, usNumArg * 2 - 2);
+
+    uint8_t *buffer = (uint8_t*)malloc(usNumArg * 4);
+    for(i=0;i<usNumArg;i++) {
+        buffer[i * 4] = 0;
+        buffer[i * 4 + 1] = 0;
+        buffer[i * 4 + 2] = pArg[i] >> 8;
+        buffer[i * 4 + 3] = pArg[i];
+    }
+    LCDWriteNData(buffer, usNumArg * 4 - 2);
 //     for(i=0;i<usNumArg;i++)
 //     {
 //         LCDWriteData(pArg[i]);
