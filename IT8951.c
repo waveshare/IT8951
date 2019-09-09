@@ -418,7 +418,9 @@ void IT8951_Cancel()
 void IT8951_Display4BppBuffer()
 {
 	//Load Image from Host to IT8951 Image Buffer
+    printf("sending\n");
 	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
+        printf("end sending\n");
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform
     IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 
