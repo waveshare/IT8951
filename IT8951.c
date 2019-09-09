@@ -49,7 +49,7 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 //-----------------------------------------------------------
 void LCDWriteData(uint16_t usData)
 {
-    LCDWaitForReady();
+//    LCDWaitForReady();
 
 	bcm2835_gpio_write(CS,LOW);
 
