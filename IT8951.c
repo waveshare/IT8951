@@ -320,7 +320,7 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 
     if (first) {
         IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
-        firt = 0;
+        first = 0;
     }
 
 	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
