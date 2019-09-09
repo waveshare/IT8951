@@ -1,4 +1,6 @@
 #include "IT8951.h"
+#include <stdio.h>
+#include <time.h>
 
 //Global varivale
 IT8951DevInfo gstI80DevInfo;
@@ -419,8 +421,16 @@ void IT8951_Display4BppBuffer()
 {
 	//Load Image from Host to IT8951 Image Buffer
     printf("sending\n");
-	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
-        printf("end sending\n");
+    clock_t t;
+    t = clock();
+    IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
+    t = clock() - t;
+    double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
+
+    printf("fun() took %f seconds to execute \n", time_taken);
+
+
+    printf("end sending\n");
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform
     IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 
