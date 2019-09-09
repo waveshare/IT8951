@@ -34,7 +34,7 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 	bcm2835_gpio_write(CS,LOW);
 
     uint8_t data[4] = {0x6000 >> 8, 0x6000, usCmdCode>>8, usCmdCode};
-    bcm2835_spi_transfern((char*)data, 4);
+    bcm2835_spi_transfern((char*)data, 2);
 //    bcm2835_spi_transfer(wPreamble>>8);
 //    bcm2835_spi_transfer(wPreamble);
 //
