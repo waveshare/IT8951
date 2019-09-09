@@ -333,7 +333,7 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 	LCDWriteCmdCode(USDEF_I80_CMD_DPY_AREA); //0x0034
 	//Write arguments
 
-    uint8_t buffer[12] = {0, 0, usX >> 8, usX,
+    uint8_t buffer[14] = {0, 0, usX >> 8, usX,
                       0, 0, usY >> 8, usY,
                       usW >> 8, usW,
                       usH >> 8, usH,
