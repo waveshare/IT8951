@@ -32,15 +32,17 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 	LCDWaitForReady();	
 
 	bcm2835_gpio_write(CS,LOW);
-	
-	bcm2835_spi_transfer(wPreamble>>8);
-	bcm2835_spi_transfer(wPreamble);
-	
-	LCDWaitForReady();	
-	
-	bcm2835_spi_transfer(usCmdCode>>8);
-	bcm2835_spi_transfer(usCmdCode);
-	
+
+    uint8_t data[4] = {0, 0, usCmdCode>>8, usCmdCode};
+    bcm2835_spi_transfern((char*)data, 4);
+//    bcm2835_spi_transfer(wPreamble>>8);
+//    bcm2835_spi_transfer(wPreamble);
+//
+//    LCDWaitForReady();
+//
+//    bcm2835_spi_transfer(usCmdCode>>8);
+//    bcm2835_spi_transfer(usCmdCode);
+
 	bcm2835_gpio_write(CS,HIGH); 
 }
 
