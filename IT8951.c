@@ -25,11 +25,11 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 	//Set Preamble for Write Command
 	uint16_t wPreamble = 0x6000; 
 	
-	LCDWaitForReady();	
+//    LCDWaitForReady();
 
 	bcm2835_gpio_write(CS,LOW);
 
-    uint8_t data[4] = {0x6000 >> 8, 0x6000, usCmdCode>>8, usCmdCode};
+    uint8_t data[4] = {wPreamble >> 8, wPreamble, usCmdCode>>8, usCmdCode};
     bcm2835_spi_transfern((char*)data, 4);
 //    bcm2835_spi_transfer(wPreamble>>8);
 //    bcm2835_spi_transfer(wPreamble);
@@ -420,9 +420,7 @@ void IT8951_Display4BppBuffer()
 	//Load Image from Host to IT8951 Image Buffer
 	IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform
-    while (true) {
-        IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
-    }
+    IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 
 //    IT8951WaitForDisplayReady();
 }
