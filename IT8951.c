@@ -49,23 +49,13 @@ void LCDWriteCmdCode(uint16_t usCmdCode)
 //-----------------------------------------------------------
 void LCDWriteData(uint16_t usData)
 {
-	//Set Preamble for Write Data
-	uint16_t wPreamble	= 0x0000;
-
-	LCDWaitForReady();
+    LCDWaitForReady();
 
 	bcm2835_gpio_write(CS,LOW);
 
     uint8_t buffer[4] = {0, 0, usData >> 8, usData};
 
     bcm2835_spi_transfern((char*)buffer, 4);
-//    bcm2835_spi_transfer(wPreamble>>8);
-//    bcm2835_spi_transfer(wPreamble);
-//
-//    LCDWaitForReady();
-//
-//    bcm2835_spi_transfer(usData>>8);
-//    bcm2835_spi_transfer(usData);
 
 	bcm2835_gpio_write(CS,HIGH); 
 }
@@ -342,11 +332,23 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 	//Send I80 Display Command (User defined command of IT8951)
 	LCDWriteCmdCode(USDEF_I80_CMD_DPY_AREA); //0x0034
 	//Write arguments
-	LCDWriteData(usX);
-	LCDWriteData(usY);
-	LCDWriteData(usW);
-	LCDWriteData(usH);
-	LCDWriteData(usDpyMode);
+
+    uint8_t buffer = [0, 0, usX >> 8, usX,
+                      0, 0, usY >> 8, usY,
+                      0, 0, usW >> 8, usW,
+                      0, 0, usH >> 8, usH,
+                      0, 0, usDpyMode >> 8, usDpyMode];
+
+
+    LCDWriteNData((char*)buffer, 10 - 2);
+    //    LCDWaitForReady();
+
+//    LCDWriteNData(buffer, 10);
+//    LCDWriteData(usX);
+//    LCDWriteData(usY);
+//    LCDWriteData(usW);
+//    LCDWriteData(usH);
+//    LCDWriteData(usDpyMode);
 }
 
 //-----------------------------------------------------------
