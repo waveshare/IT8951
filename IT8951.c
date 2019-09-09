@@ -219,7 +219,6 @@ void IT8951SetVCOM(uint16_t vcom)
 	LCDWriteData(vcom);
 }
 
-
 //-----------------------------------------------------------
 //Host Cmd 10---LD_IMG
 //-----------------------------------------------------------
@@ -235,23 +234,7 @@ void IT8951LoadImgStart(IT8951LdImgInfo* pstLdImgInfo)
     //Send Arg
     LCDWriteData(usArg);
 }
-//-----------------------------------------------------------
-//Host Cmd 11---LD_IMG_AREA
-//-----------------------------------------------------------
-void IT8951LoadImgAreaStart(IT8951LdImgInfo* pstLdImgInfo ,IT8951AreaImgInfo* pstAreaImgInfo)
-{
-    uint16_t usArg[5];
-    //Setting Argument for Load image start
-    usArg[0] = (pstLdImgInfo->usEndianType << 8 )
-    |(pstLdImgInfo->usPixelFormat << 4)
-    |(pstLdImgInfo->usRotate);
-    usArg[1] = pstAreaImgInfo->usX;
-    usArg[2] = pstAreaImgInfo->usY;
-    usArg[3] = pstAreaImgInfo->usWidth;
-    usArg[4] = pstAreaImgInfo->usHeight;
-    //Send Cmd and Args
-    LCDSendCmdArg(IT8951_TCON_LD_IMG_AREA, usArg, 5);
-}
+
 //-----------------------------------------------------------
 //Host Cmd 12---LD_IMG_END
 //-----------------------------------------------------------
@@ -311,7 +294,7 @@ void IT8951WaitForDisplayReady()
 //-----------------------------------------------------------
 //Display function 2---Load Image Area process
 //-----------------------------------------------------------
-void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgInfo* pstAreaImgInfo)
+void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo)
 {
 	//Source buffer address of Host
 	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
@@ -323,12 +306,11 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
     t = clock();
 
     IT8951LoadImgStart(pstLdImgInfo);
-//    IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
     t = clock() - t;
     double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
 
-    LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
+    LCDWriteNData(pusFrameBuf, 1872 * 1404 / 2);
     printf("LCDWriteNData took %f seconds to execute \n", time_taken);
 	IT8951LoadImgEnd();
 }
@@ -350,7 +332,6 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 }
 
 IT8951LdImgInfo stLdImgInfo;
-IT8951AreaImgInfo stAreaImgInfo;
 
 //-----------------------------------------------------------
 //Test function 1---Software Initial
@@ -408,11 +389,6 @@ uint8_t *IT8951_Init()
     stLdImgInfo.usPixelFormat    = IT8951_4BPP;
     stLdImgInfo.usRotate         = IT8951_ROTATE_0;
     stLdImgInfo.ulImgBufBaseAddr = gulImgBufAddr;
-    //Set Load Area
-    stAreaImgInfo.usX      = 0;
-    stAreaImgInfo.usY      = 0;
-    stAreaImgInfo.usWidth  = gstI80DevInfo.usPanelW;
-    stAreaImgInfo.usHeight = gstI80DevInfo.usPanelH;
 
     IT8951SetImgBufBaseAddr(gulImgBufAddr);
 
@@ -433,7 +409,7 @@ void IT8951_Display4BppBuffer()
 	//Load Image from Host to IT8951 Image Buffer
     clock_t t;
     t = clock();
-    IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
+    IT8951HostAreaPackedPixelWrite(&stLdImgInfo);
     t = clock() - t;
     double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
 
