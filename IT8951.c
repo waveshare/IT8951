@@ -334,20 +334,20 @@ void IT8951DisplayArea(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH, u
 	//Write arguments
 
     uint8_t buffer[12] = {0, 0, usX >> 8, usX,
-                      usY >> 8, usY,
+                      0, 0, usY >> 8, usY,
                       usW >> 8, usW,
                       usH >> 8, usH,
         usDpyMode >> 8, usDpyMode};
 
-    LCDWaitForReady();
+//    LCDWaitForReady();
 
-    LCDWriteNData(buffer, 10);
+    LCDWriteNData(buffer, 8);
 
 //    LCDWriteData(usX);
 //    LCDWriteData(usY);
-//    LCDWriteData(usW);
-//    LCDWriteData(usH);
-//    LCDWriteData(usDpyMode);
+    LCDWriteData(usW);
+    LCDWriteData(usH);
+    LCDWriteData(usDpyMode);
 }
 
 //-----------------------------------------------------------
