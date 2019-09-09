@@ -316,7 +316,12 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
 
 	//Set Image buffer(IT8951) Base address
-	IT8951SetImgBufBaseAddr(pstLdImgInfo->ulImgBufBaseAddr);
+    static int test = 0;
+
+    if (!test) {
+        IT8951SetImgBufBaseAddr(pstLdImgInfo->ulImgBufBaseAddr);
+        test = 1;
+    }
 	//Send Load Image start Cmd
 	IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
@@ -420,17 +425,14 @@ void IT8951_Cancel()
 void IT8951_Display4BppBuffer()
 {
 	//Load Image from Host to IT8951 Image Buffer
-    printf("sending\n");
     clock_t t;
     t = clock();
     IT8951HostAreaPackedPixelWrite(&stLdImgInfo, &stAreaImgInfo);
     t = clock() - t;
     double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
 
-    printf("fun() took %f seconds to execute \n", time_taken);
+    printf("IT8951HostAreaPackedPixelWrite took %f seconds to execute \n", time_taken);
 
-
-    printf("end sending\n");
 	//Display Area ?V (x,y,w,h) with mode 2 for fast gray clear mode - depends on current waveform
     IT8951DisplayArea(0,0, gstI80DevInfo.usPanelW, gstI80DevInfo.usPanelH, 2);
 
