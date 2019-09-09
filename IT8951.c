@@ -317,14 +317,11 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
 
 	//Send Load Image start Cmd
-    static int first = 1;
+    IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
-//    if (first) {
-        IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
-//        first = 0;
-//    }
 
-	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
+//    LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
+    LCDWriteNData(pusFrameBuf, 600 * 825);
 	IT8951LoadImgEnd();
 }
 
