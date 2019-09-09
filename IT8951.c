@@ -144,6 +144,7 @@ void LCDSendCmdArg(uint16_t usCmdCode,uint16_t* pArg, uint16_t usNumArg)
      //Send Cmd code
      LCDWriteCmdCode(usCmdCode);
      //Send Data
+    LCDWriteNData((char*)pArg, usNumArg * 2);
      for(i=0;i<usNumArg;i++)
      {
          LCDWriteData(pArg[i]);
@@ -249,7 +250,7 @@ void IT8951LoadImgAreaStart(IT8951LdImgInfo* pstLdImgInfo ,IT8951AreaImgInfo* ps
     usArg[3] = pstAreaImgInfo->usWidth;
     usArg[4] = pstAreaImgInfo->usHeight;
     //Send Cmd and Args
-    LCDSendCmdArg(IT8951_TCON_LD_IMG_AREA, usArg , 5);
+    LCDSendCmdArg(IT8951_TCON_LD_IMG_AREA, usArg, 5);
 }
 //-----------------------------------------------------------
 //Host Cmd 12---LD_IMG_END
@@ -318,10 +319,10 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	//Send Load Image start Cmd
     static int first = 1;
 
-    if (first) {
+//    if (first) {
         IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
-        first = 0;
-    }
+//        first = 0;
+//    }
 
 	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
 	IT8951LoadImgEnd();
