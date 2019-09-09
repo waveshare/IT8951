@@ -315,17 +315,10 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	//Source buffer address of Host
 	uint8_t* pusFrameBuf = (uint8_t*)pstLdImgInfo->ulStartFBAddr;
 
-	//Set Image buffer(IT8951) Base address
-//    static int test = 0;
-//
-//    if (!test) {
-//        IT8951SetImgBufBaseAddr(pstLdImgInfo->ulImgBufBaseAddr);
-//        test = 1;
-//    }
 	//Send Load Image start Cmd
 	IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
-	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
+	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 4);
 	IT8951LoadImgEnd();
 }
 
