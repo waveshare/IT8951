@@ -318,7 +318,7 @@ void IT8951HostAreaPackedPixelWrite(IT8951LdImgInfo* pstLdImgInfo,IT8951AreaImgI
 	//Send Load Image start Cmd
 	IT8951LoadImgAreaStart(pstLdImgInfo, pstAreaImgInfo);
 
-	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 4);
+	LCDWriteNData(pusFrameBuf, pstAreaImgInfo->usHeight * pstAreaImgInfo->usWidth / 2);
 	IT8951LoadImgEnd();
 }
 
@@ -355,7 +355,7 @@ uint8_t *IT8951_Init()
 	bcm2835_spi_begin();
 	bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);   		//default
 	bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);               		//default
-	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_16);		//default
+	bcm2835_spi_setClockDivider(BCM2835_SPI_CLOCK_DIVIDER_8);		//default
 	
 	bcm2835_gpio_fsel(CS, BCM2835_GPIO_FSEL_OUTP);  
 	bcm2835_gpio_fsel(HRDY, BCM2835_GPIO_FSEL_INPT);
