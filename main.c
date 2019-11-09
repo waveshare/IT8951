@@ -1,5 +1,16 @@
 #include "IT8951.h"
 #include <png.h>
+#include <pthread.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+
+int IT8951_started = 0;
+uint8_t *buffer_to_write = NULL;
+int target_screen_width = 1872;
+int target_screen_height = 1404;
 
 void abort_(const char * s)
 {
@@ -7,17 +18,17 @@ void abort_(const char * s)
     abort();
 }
 
-uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *color_type_ptr, png_byte *bit_depth_ptr, uint8_t *buffer_to_write)
+void read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *color_type_ptr, png_byte *bit_depth_ptr, uint8_t *buffer_to_write)
 {
     char header[8];    // 8 is the maximum size that can be checked
 
     /* open file and test for it being a png */
     FILE *fp = fopen(file_name, "rb");
     if (!fp)
-        abort_("[read_png_file] File %s could not be opened for reading");
+        printf("[read_png_file] File %s could not be opened for reading errno = %d\n", file_name, errno);
     fread(header, 1, 8, fp);
     if (png_sig_cmp(header, 0, 8))
-        abort_("[read_png_file] File %s is not recognized as a PNG file");
+        printf("[read_png_file] File %s is not recognized as a PNG file\n", file_name);
 
 
     /* initialize stuff */
@@ -51,58 +62,176 @@ uint8_t *read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byt
         abort_("[read_png_file] Error during read_image");
 
 
-    png_bytep * row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * *height_ptr);
+    png_bytep *row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * *height_ptr);
     png_bytep all_bytes = (png_bytep)buffer_to_write;
     all_bytes[0] = 0;
     all_bytes[1] = 0;
     int row_size = png_get_rowbytes(png_ptr,info_ptr);
-    for (int y=0; y<*height_ptr; y++)
+    for (int y = 0; y < *height_ptr; y++)
         row_pointers[y] = 2 + all_bytes + (y * row_size);
 
     png_read_image(png_ptr, row_pointers);
 
     free(row_pointers);
     fclose(fp);
-
-    return (uint8_t *)all_bytes;
 }
 
+void start_board() {
+    if(!(buffer_to_write = IT8951_Init())) {
+        printf("IT8951_Init error, exiting\n");
+        exit(1);
+    } else {
+        IT8951_started = 1;
+        printf("IT8951 started\n");
+    }
+}
 
-int main (int argc, char *argv[])
-{
-    uint8_t *buffer_to_write;
-    printf("init start\n");
-	if(!(buffer_to_write = IT8951_Init()))
-	{
-		printf("IT8951_Init error \n");
-		return 1;
-	}
-    printf("init end\n");
-	
-	if (argc < 2)
-	{
-		printf("Error: argc!=2.\n");
-		exit(1);
-	}
+void stop_board() {
+    buffer_to_write = NULL;
+    IT8951_Cancel();
+    IT8951_started = 0;
+    printf("Board is now stopped\n");
+}
 
+void display_4bpp_filename(char *filename) {
     png_byte color_type;
     png_byte bit_depth;
     int width, height;
 
-    for (int i = 0; i < 10; ++i) {
-        printf("read file start\n");
-        uint8_t *buffer = read_png_file(argv[i % 2 + 1], &width, &height, &color_type, &bit_depth, buffer_to_write);
-        printf("read file end\n");
-        printf("update screen start\n");
-        IT8951_Display4BppBuffer();
+    printf("Reading file: %s\n", filename);
+    read_png_file(filename, &width, &height, &color_type, &bit_depth, buffer_to_write);
+    if (width != target_screen_width || height != target_screen_height) {
+        printf("Image should be %dx%d but it's %dx%d\n", target_screen_width, target_screen_height, width, height);
+        return;
+    }
+    printf("Updating screen for file: %s\n", filename);
+    IT8951_Display4BppBuffer();
+}
 
-        printf("update screen end\n");
+void *connection_handler(void *socket_desc) {
+    //get the socket descriptor
+    int sock = *(int*)socket_desc;
+    int read_size;
+    char client_message[256];
+
+    //Receive a message from client
+    while ((read_size = recv(sock, client_message, 255, 0)) > 0) {
+        printf("Read size: %d\n", read_size);
+        if (strncmp(client_message, "S", 1) == 0) {
+            if (IT8951_started) {
+                printf("CAUTION, Board is already started\n");
+            } else {
+                start_board();
+            }
+        } else if (strncmp(client_message, "U", 1) == 0) {
+            int started_automatically = 0;
+            if (!IT8951_started) {
+                printf("Update without previous start command. Starting automatically\n");
+                started_automatically = 1;
+                start_board();
+            }
+
+            char *filename = client_message + 1; // Offset by one to remove the "U"
+            client_message[read_size] = 0;
+
+            // Remove \n so it's easier to try with netcat
+            int idx = read_size;
+            while (idx > 0) {
+                --idx;
+                if (client_message[idx] == '\n') {
+                    client_message[idx] = 0;
+                }
+            }
+
+            display_4bpp_filename(filename);
+
+            if (started_automatically) {
+                printf("Stopping the board because it started automatically\n");
+                stop_board();
+            }
+        } else if (strncmp(client_message, "C", 1) == 0) {
+            if (!IT8951_started) {
+                printf("CAUTION, Board is already stopped\n");
+            } else {
+                stop_board();
+            }
+        } else {
+            client_message[read_size] = 0;
+            printf("UN-handled message: %s\n", client_message);
+        }
     }
 
-	
-	IT8951_Cancel();
+    if (read_size == 0){
+        printf("Client disconnected\n");
+    }
+    else if(read_size == -1){
+        printf("recv failed\n");
+    }
 
-	return 0;
+    // Free the socket pointer
+    close(sock);
+    free(socket_desc);
+    return 0;
+}
+
+int start_server(unsigned short port) {
+    int socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_desc == -1) {
+        printf("Could not create a socket\n");
+        return 1;
+    }
+
+    //create a server
+    struct sockaddr_in server;
+
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port); //specify the open port_number
+
+    if (bind(socket_desc, (struct sockaddr*)&server, sizeof(server)) < 0 ) {
+        printf("Bind failed\n");
+        return 1;
+    }
+    printf("Bind done\n");
+
+    //listen for new connections:
+    listen(socket_desc, 2);
+    printf("Waiting for new connections...\n");
+
+    int c = sizeof(struct sockaddr_in);
+    // Client to be connected
+    struct sockaddr_in client;
+    // New socket for client
+    int new_socket, *new_sock;
+    while ((new_socket = accept( socket_desc, (struct sockaddr*)&client, (socklen_t*)&c ))) {
+        // Get the IP address of a client
+        char *CLIENT_IP = inet_ntoa(client.sin_addr);
+        int CLIENT_PORT = ntohs(client.sin_port);
+        printf("New Client = {%s:%d}\n", CLIENT_IP, CLIENT_PORT);
+
+        pthread_t sniffer_thread;
+        new_sock = malloc(1);
+        *new_sock = new_socket;
+
+        if (pthread_create(&sniffer_thread, NULL, connection_handler, (void*)new_sock) < 0) {
+            printf("could not create thread\n");
+            return 1;
+        }
+        // Now join the thread, so that we dont terminate before the thread
+        pthread_join(sniffer_thread, NULL);
+    }
+
+    if (new_socket < 0) {
+        printf("Accept failed\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    return start_server(8888); // Specify the port
 }
 
 
