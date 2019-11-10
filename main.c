@@ -152,10 +152,7 @@ void *connection_handler(void *socket_desc) {
                 }
             }
 
-            char *filename = client_message + 1;
-            client_message[read_size] = 0;
-
-            if (fopen(part_filename, "r") == NULL) {
+            if (fopen(filename, "r") == NULL) {
                 display_4bpp_filename(filename);
             } else {
                 printf("%s not found, requesting it", filename);
