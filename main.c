@@ -7,6 +7,9 @@
 #include <string.h>
 #include <errno.h>
 
+
+#define TRANSFER_READ_SIZE 4096 * 4
+
 int IT8951_started = 0;
 uint8_t *buffer_to_write = NULL;
 int target_screen_width = 1872;
@@ -94,6 +97,14 @@ void stop_board() {
 }
 
 void display_4bpp_filename(char *filename) {
+    int started_automatically = 0;
+    if (!IT8951_started) {
+        printf("Update without previous start command. Starting automatically\n");
+        started_automatically = 1;
+        start_board();
+    }
+
+
     png_byte color_type;
     png_byte bit_depth;
     int width, height;
@@ -106,6 +117,11 @@ void display_4bpp_filename(char *filename) {
     }
     printf("Updating screen for file: %s\n", filename);
     IT8951_Display4BppBuffer();
+
+    if (started_automatically) {
+        printf("Stopping the board because it started automatically\n");
+        stop_board();
+    }
 }
 
 void *connection_handler(void *socket_desc) {
@@ -124,13 +140,6 @@ void *connection_handler(void *socket_desc) {
                 start_board();
             }
         } else if (strncmp(client_message, "U", 1) == 0) {
-            int started_automatically = 0;
-            if (!IT8951_started) {
-                printf("Update without previous start command. Starting automatically\n");
-                started_automatically = 1;
-                start_board();
-            }
-
             char *filename = client_message + 1; // Offset by one to remove the "U"
             client_message[read_size] = 0;
 
@@ -143,12 +152,26 @@ void *connection_handler(void *socket_desc) {
                 }
             }
 
-            display_4bpp_filename(filename);
+            char *filename = client_message + 1;
+            client_message[read_size] = 0;
 
-            if (started_automatically) {
-                printf("Stopping the board because it started automatically\n");
-                stop_board();
+            if (fopen(part_filename, "r") == NULL) {
+                display_4bpp_filename(filename);
+            } else {
+                printf("%s not found, requesting it", filename);
+
+                client_message[0] = 'D';
+                write(sock, client_message, file_read_size); // request for the file
+
+                char file_buffer[TRANSFER_READ_SIZE];
+                FILE *fp = fopen(filename, "ab+");
+                while ((read_size = recv(sock, file_buffer, TRANSFER_READ_SIZE, 0)) > 0) {
+                    fwrite(file_buffer, read_size, sizeof(char), fp);
+                }
+                fclose(fp);
+                display_4bpp_filename(filename);
             }
+            break;
         } else if (strncmp(client_message, "C", 1) == 0) {
             if (!IT8951_started) {
                 printf("CAUTION, Board is already stopped\n");
@@ -161,10 +184,10 @@ void *connection_handler(void *socket_desc) {
         }
     }
 
-    if (read_size == 0){
+    if (read_size == 0) {
         printf("Client disconnected\n");
     }
-    else if(read_size == -1){
+    else if (read_size == -1) {
         printf("recv failed\n");
     }
 
