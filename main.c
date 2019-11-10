@@ -158,7 +158,7 @@ void *connection_handler(void *socket_desc) {
                 printf("%s not found, requesting it", filename);
 
                 client_message[0] = 'D';
-                write(sock, client_message, file_read_size); // request for the file
+                write(sock, client_message, read_size); // request for the file
 
                 char file_buffer[TRANSFER_READ_SIZE];
                 FILE *fp = fopen(filename, "ab+");
