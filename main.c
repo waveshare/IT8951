@@ -147,6 +147,10 @@ void *connection_handler(void *socket_desc) {
             int idx = read_size;
             while (idx > 0) {
                 --idx;
+                if (client_message[idx] == '/') {
+                    filename = &client_message[idx];
+                    break;
+                }
                 if (client_message[idx] == '\n') {
                     client_message[idx] = 0;
                 }
@@ -155,7 +159,7 @@ void *connection_handler(void *socket_desc) {
             if (fopen(filename, "r") == NULL) {
                 display_4bpp_filename(filename);
             } else {
-                printf("%s not found, requesting it", filename);
+                printf("%s not found, requesting it\n", filename);
 
                 client_message[0] = 'D';
                 write(sock, client_message, read_size); // request for the file
@@ -204,7 +208,7 @@ int start_server(unsigned short port) {
     //create a server
     struct sockaddr_in server;
 
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_addr.s_addr = htonl(INADDR_ANY);
     server.sin_family = AF_INET;
     server.sin_port = htons(port); //specify the open port_number
 
