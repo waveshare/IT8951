@@ -148,7 +148,7 @@ void *connection_handler(void *socket_desc) {
             while (idx > 0) {
                 --idx;
                 if (client_message[idx] == '/') {
-                    filename = &client_message[idx];
+                    filename = &client_message[idx + 1];
                     break;
                 }
                 if (client_message[idx] == '\n') {
