@@ -254,7 +254,7 @@ int start_server(unsigned short port) {
 
 int main(int argc, char *argv[])
 {
-    return start_server(8888); // Specify the port
+    return start_server(8889); // Specify the port
 }
 
 
