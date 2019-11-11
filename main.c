@@ -57,6 +57,13 @@ void read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *c
     *color_type_ptr = png_get_color_type(png_ptr, info_ptr);
     *bit_depth_ptr = png_get_bit_depth(png_ptr, info_ptr);
 
+
+    if (*width_ptr != target_screen_width || *height_ptr != target_screen_height) {
+        printf("Image should be %dx%d but it's %dx%d\n", target_screen_width, target_screen_height, *width_ptr, *height_ptr);
+        fclose(fp);
+        return;
+    }
+
     int number_of_passes = png_set_interlace_handling(png_ptr);
     png_read_update_info(png_ptr, info_ptr);
 
@@ -156,7 +163,7 @@ void *connection_handler(void *socket_desc) {
                 }
             }
 
-            if (fopen(filename, "r") == NULL) {
+            if (fopen(filename, "r") != NULL) {
                 display_4bpp_filename(filename);
             } else {
                 printf("%s not found, requesting it\n", filename);
@@ -219,7 +226,7 @@ int start_server(unsigned short port) {
     printf("Bind done\n");
 
     //listen for new connections:
-    listen(socket_desc, 2);
+    listen(socket_desc, 1);
     printf("Waiting for new connections...\n");
 
     int c = sizeof(struct sockaddr_in);
@@ -255,7 +262,7 @@ int start_server(unsigned short port) {
 
 int main(int argc, char *argv[])
 {
-    return start_server(8889); // Specify the port
+    return start_server(8888); // Specify the port
 }
 
 
