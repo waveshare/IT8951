@@ -87,7 +87,7 @@ void read_png_file(char* file_name, int* width_ptr, int* height_ptr, png_byte *c
 }
 
 void start_board() {
-    if(!(buffer_to_write = IT8951_Init())) {
+    if(!(buffer_to_write = IT8951_Init(target_screen_width, target_screen_height))) {
         printf("IT8951_Init error, exiting\n");
         exit(1);
     } else {
