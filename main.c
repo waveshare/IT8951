@@ -154,10 +154,10 @@ void *connection_handler(void *socket_desc) {
             int idx = read_size;
             while (idx > 0) {
                 --idx;
-                if (client_message[idx] == '/') {
-                    filename = &client_message[idx + 1];
-                    break;
-                }
+//                if (client_message[idx] == '/') {
+//                    filename = &client_message[idx + 1];
+//                    break;
+//                }
                 if (client_message[idx] == '\n') {
                     client_message[idx] = 0;
                 }
@@ -166,7 +166,7 @@ void *connection_handler(void *socket_desc) {
             if (fopen(filename, "r") != NULL) {
                 display_4bpp_filename(filename);
             } else {
-                printf("%s not found, requesting it\n", filename);
+                printf("%s: file not found\n", filename);
 
 //                client_message[0] = 'D';
 //                write(sock, client_message, read_size); // request for the file
