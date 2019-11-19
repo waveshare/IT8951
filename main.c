@@ -154,10 +154,10 @@ void *connection_handler(void *socket_desc) {
             int idx = read_size;
             while (idx > 0) {
                 --idx;
-//                if (client_message[idx] == '/') {
-//                    filename = &client_message[idx + 1];
-//                    break;
-//                }
+                if (client_message[idx] == '/') {
+                    filename = &client_message[idx + 1];
+                    break;
+                }
                 if (client_message[idx] == '\n') {
                     client_message[idx] = 0;
                 }
@@ -168,16 +168,16 @@ void *connection_handler(void *socket_desc) {
             } else {
                 printf("%s: file not found\n", filename);
 
-//                client_message[0] = 'D';
-//                write(sock, client_message, read_size); // request for the file
-//
-//                char file_buffer[TRANSFER_READ_SIZE];
-//                FILE *fp = fopen(filename, "ab+");
-//                while ((read_size = recv(sock, file_buffer, TRANSFER_READ_SIZE, 0)) > 0) {
-//                    fwrite(file_buffer, read_size, sizeof(char), fp);
-//                }
-//                fclose(fp);
-//                display_4bpp_filename(filename);
+                client_message[0] = 'D';
+                write(sock, client_message, read_size); // request for the file
+
+                char file_buffer[TRANSFER_READ_SIZE];
+                FILE *fp = fopen(filename, "ab+");
+                while ((read_size = recv(sock, file_buffer, TRANSFER_READ_SIZE, 0)) > 0) {
+                    fwrite(file_buffer, read_size, sizeof(char), fp);
+                }
+                fclose(fp);
+                display_4bpp_filename(filename);
             }
             break;
         } else if (strncmp(client_message, "C", 1) == 0) {
