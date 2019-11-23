@@ -336,7 +336,7 @@ IT8951LdImgInfo stLdImgInfo;
 //-----------------------------------------------------------
 //Test function 1---Software Initial
 //-----------------------------------------------------------
-uint8_t *IT8951_Init(int expected_width, int expected_height)
+uint8_t *IT8951_Init(int expected_width, int expected_height, int reverted)
 {
 	if (!bcm2835_init()) 
 	{
@@ -390,7 +390,7 @@ uint8_t *IT8951_Init(int expected_width, int expected_height)
     stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
     stLdImgInfo.usEndianType     = IT8951_LDIMG_B_ENDIAN;
     stLdImgInfo.usPixelFormat    = IT8951_4BPP;
-    stLdImgInfo.usRotate         = IT8951_ROTATE_0;
+    stLdImgInfo.usRotate         = reverted ? IT8951_ROTATE_180 : IT8951_ROTATE_0;
     stLdImgInfo.ulImgBufBaseAddr = gulImgBufAddr;
 
     IT8951SetImgBufBaseAddr(gulImgBufAddr);

@@ -14,6 +14,7 @@ int IT8951_started = 0;
 uint8_t *buffer_to_write = NULL;
 int target_screen_width = 1872;
 int target_screen_height = 1404;
+int should_revert = 0;
 
 void abort_(const char * s)
 {
@@ -262,6 +263,7 @@ int start_server(unsigned short port) {
 
 int main(int argc, char *argv[])
 {
+    should_revert = fopen("reverted", "r") != NULL;
     while (1) {
         start_server(8888);
         sleep(1);
