@@ -262,7 +262,11 @@ int start_server(unsigned short port) {
 
 int main(int argc, char *argv[])
 {
-    return start_server(8888); // Specify the port
+    while (1) {
+        start_server(8888);
+        sleep(1);
+    }
+    return 0; // Specify the port
 }
 
 
