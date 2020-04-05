@@ -2,6 +2,8 @@
 
 int main (int argc, char *argv[])
 {
+    printf("Hello!\n\n");
+
 	/*
 	printf("ReadReg = 0x%x\n",IT8951ReadReg(LISAR));
 	IT8951WriteReg(LISAR,0x1234);
