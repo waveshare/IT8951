@@ -387,12 +387,15 @@ void GetIT8951SystemInfo(void* pBuf)
 	uint16_t* pusWord = (uint16_t*)pBuf;
 	IT8951DevInfo* pstDevInfo;
 
+	printf("sending command\n");
 	//Send I80 CMD
 	LCDWriteCmdCode(USDEF_I80_CMD_GET_DEV_INFO);
- 
+
+	printf("burst read\n");
 	//Burst Read Request for SPI interface only
 	LCDReadNData(pusWord, sizeof(IT8951DevInfo)/2);//Polling HRDY for each words(2-bytes) if possible
-	
+
+	printf("parsing info\n");
 	//Show Device information of IT8951
 	pstDevInfo = (IT8951DevInfo*)pBuf;
 	printf("Panel(W,H) = (%d,%d)\r\n",
@@ -524,12 +527,13 @@ void IT8951DisplayAreaBuf(uint16_t usX, uint16_t usY, uint16_t usW, uint16_t usH
 //-----------------------------------------------------------
 uint8_t IT8951_Init()
 {
+    printf("bcm2835 setup\n");
 	if (!bcm2835_init()) 
 	{
 		printf("bcm2835_init error \n");
 		return 1;
 	}
-	
+
 	bcm2835_spi_begin();
 	bcm2835_spi_setBitOrder(BCM2835_SPI_BIT_ORDER_MSBFIRST);   		//default
 	bcm2835_spi_setDataMode(BCM2835_SPI_MODE0);               		//default
@@ -547,21 +551,25 @@ uint8_t IT8951_Init()
 	bcm2835_delay(100);
 	bcm2835_gpio_write(RESET, HIGH);
 
+	printf("getting device info\n");
 	//Get Device Info
 	GetIT8951SystemInfo(&gstI80DevInfo);
-	
+
+	printf("allocating host frame buffer\n");
 	gpFrameBuf = malloc(gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH);
 	if (!gpFrameBuf)
 	{
 		perror("malloc error!\n");
 		return 1;
 	}
-	
+
  	gulImgBufAddr = gstI80DevInfo.usImgBufAddrL | (gstI80DevInfo.usImgBufAddrH << 16);
- 	
+
+	printf("enabling packed mode\n");
  	//Set to Enable I80 Packed mode
  	IT8951WriteReg(I80CPCR, 0x0001);
 
+ 	printf("setting vcom\n");
 	if (VCOM != IT8951GetVCOM())
 	{
 		IT8951SetVCOM(VCOM);
@@ -590,6 +598,7 @@ void IT8951DisplayExample()
 	
 	//Prepare image
 	//Write pixel 0xF0(White) to Frame Buffer
+
  	memset(gpFrameBuf, 0xF0, gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH);
 	
  	//Check TCon is free ? Wait TCon Ready (optional)

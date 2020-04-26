@@ -1,6 +1,6 @@
 #include <string.h>
 #include "miniGUI.h"
-#include "AsciiLib.h"
+#include "original/AsciiLib.h"
 
 extern IT8951DevInfo gstI80DevInfo;
 extern uint8_t* gpFrameBuf; //Host Source Frame buffer
@@ -16,7 +16,7 @@ void EPD_DrawPixel(uint16_t x0, uint16_t y0, uint8_t color)
 		return ;	
 	
 	/*
-	ÏÔ´æ´¦Àí
+	ï¿½Ô´æ´¦ï¿½ï¿½
 	*/
 	gpFrameBuf[y0*gstI80DevInfo.usPanelW + x0] = color;
 }
@@ -324,10 +324,10 @@ void EPD_DrawMatrix(uint16_t Xpos, uint16_t Ypos,uint16_t Width, uint16_t High,c
 	}
 }
 
-//ÏÔÊ¾BMPÍ¼Æ¬Ïà¹ØµÄÈ«¾Ö±äÁ¿
-struct   fb_var_screeninfo vinfo; 	// ¼ÇÂ¼ÓÃ»§¿ÉÐÞ¸ÄµÄÏÔÊ¾¿ØÖÆÆ÷²ÎÊý
-uint32_t fbfd = 0;					// /dev/fb0 ÎÄ¼þÃèÊö·û
-uint8_t *fbp = 0;					// ÄÚ´æÓ³ÉäÖ¸Õë
+//ï¿½ï¿½Ê¾BMPÍ¼Æ¬ï¿½ï¿½Øµï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½
+struct   fb_var_screeninfo vinfo; 	// ï¿½ï¿½Â¼ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Þ¸Äµï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+uint32_t fbfd = 0;					// /dev/fb0 ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+uint8_t *fbp = 0;					// ï¿½Ú´ï¿½Ó³ï¿½ï¿½Ö¸ï¿½ï¿½
 uint8_t *bmp_dst_buf = NULL;		// BMP Buffer
 uint8_t *bmp_src_buf = NULL;		// BMP Buffer
 uint32_t bmp_width, bmp_height;
@@ -346,7 +346,7 @@ static void Bitmap_format_Matrix(uint8_t *dst,uint8_t *src)
 	uint8_t temp;
 	uint32_t count;
 	
-	//ÓÉÓÚbmp´æ´¢ÊÇ´ÓºóÃæÍùÇ°Ãæ£¬ËùÒÔÐèÒªµ¹Ðò½øÐÐ×ª»»
+	//ï¿½ï¿½ï¿½ï¿½bmpï¿½æ´¢ï¿½Ç´Óºï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
 	switch(bmp_BitCount)
 	{
 		case 1:
@@ -525,7 +525,7 @@ static void DrawMatrix(uint16_t Xpos, uint16_t Ypos,uint16_t Width, uint16_t Hig
 
 uint8_t Show_bmp(uint32_t x, uint32_t y,char *path)
 {
-	FILE *fp;//bmpÎÄ¼þÖ¸Õë
+	FILE *fp;//bmpï¿½Ä¼ï¿½Ö¸ï¿½ï¿½
 	BITMAPFILEHEADER FileHead;
 	BITMAPINFOHEADER InfoHead;
 	uint32_t total_length;
@@ -546,8 +546,8 @@ uint8_t Show_bmp(uint32_t x, uint32_t y,char *path)
 		return(-2);
 	}
 
-	//¼ì²âÊÇ·ñÊÇbmpÍ¼Ïñ
-	if (FileHead.cfType != 0x4D42)//ÎÄ¼þÀàÐÍ£¬"BM"(0x4D42)
+	//ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½bmpÍ¼ï¿½ï¿½
+	if (FileHead.cfType != 0x4D42)//ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Í£ï¿½"BM"(0x4D42)
 	{
 		printf("It's not a BMP file\n");
 		fclose(fp);
@@ -605,10 +605,10 @@ uint8_t Show_bmp(uint32_t x, uint32_t y,char *path)
         return -5;
     }
 
-	 //Ìø×ªµ½Êý¾ÝÇø
+	 //ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     fseek(fp, FileHead.cfoffBits, SEEK_SET);
 	
-	//Ã¿ÐÐ×Ö½ÚÊý
+	//Ã¿ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½
     buf = bmp_src_buf;
     while ((ret = fread(buf,1,total_length,fp)) >= 0) 
 	{
@@ -623,7 +623,7 @@ uint8_t Show_bmp(uint32_t x, uint32_t y,char *path)
             break;
     }
 	
-	//Ìø×ªµ½µ÷ÊÔ°å
+	//ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ô°ï¿½
 	switch(bmp_BitCount)
 	{	
 		case 1:
