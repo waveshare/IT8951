@@ -600,7 +600,7 @@ void IT8951DisplayExample()
  	//--------------------------------------------------------------------------------------------
  	//Load Image and Display
  	//Setting Load image information
- 	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+	stLdImgInfo.ulStartFBAddr    = (size_t)gpFrameBuf;
  	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
  	stLdImgInfo.usPixelFormat    = IT8951_8BPP;
  	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
@@ -626,7 +626,7 @@ void IT8951DisplayExample()
  	IT8951WaitForDisplayReady();
  	
  	//Setting Load image information
- 	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+	stLdImgInfo.ulStartFBAddr    = (size_t)gpFrameBuf;
  	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
  	stLdImgInfo.usPixelFormat    = IT8951_8BPP; 
  	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
@@ -674,7 +674,7 @@ void IT8951DisplayExample2()
 	memset(gpFrameBuf+width * high * 15, 0xff, gstI80DevInfo.usPanelW * gstI80DevInfo.usPanelH - width * high * 15);
 	IT8951WaitForDisplayReady();
 	//Setting Load image information
-	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+	stLdImgInfo.ulStartFBAddr    = (size_t)gpFrameBuf;
 	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
 	stLdImgInfo.usPixelFormat    = IT8951_8BPP; 
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
@@ -740,7 +740,7 @@ void IT8951_GUI_Example()
 	IT8951WaitForDisplayReady();
 	
 	//Setting Load image information
-	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+	stLdImgInfo.ulStartFBAddr    = (size_t)gpFrameBuf;
 	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
 	stLdImgInfo.usPixelFormat    = IT8951_8BPP; 
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
@@ -770,7 +770,7 @@ void IT8951_BMP_Example(uint32_t x, uint32_t y,char *path)
 	IT8951WaitForDisplayReady();
 	
 	//Setting Load image information
-	stLdImgInfo.ulStartFBAddr    = (uint32_t)gpFrameBuf;
+	stLdImgInfo.ulStartFBAddr    = (size_t)gpFrameBuf;
 	stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
 	stLdImgInfo.usPixelFormat    = IT8951_8BPP; 
 	stLdImgInfo.usRotate         = IT8951_ROTATE_0;
@@ -797,7 +797,7 @@ void IT8951Load1bppImage(uint8_t* p1bppImgBuf, uint16_t usX, uint16_t usY, uint1
     IT8951AreaImgInfo stAreaImgInfo;
 	
     //Setting Load image information
-    stLdImgInfo.ulStartFBAddr    = (uint32_t) p1bppImgBuf;
+    stLdImgInfo.ulStartFBAddr    = (size_t) p1bppImgBuf;
     stLdImgInfo.usEndianType     = IT8951_LDIMG_L_ENDIAN;
     stLdImgInfo.usPixelFormat    = IT8951_8BPP; //we use 8bpp because IT8951 dose not support 1bpp mode for load image?Aso we use Load 8bpp mode ,but the transfer size needs to be reduced to Size/8
     stLdImgInfo.usRotate         = IT8951_ROTATE_0;

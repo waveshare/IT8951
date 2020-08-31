@@ -20,7 +20,7 @@ typedef struct IT8951LdImgInfo
     uint16_t usEndianType; //little or Big Endian
     uint16_t usPixelFormat; //bpp
     uint16_t usRotate; //Rotate mode
-    uint32_t ulStartFBAddr; //Start address of source Frame buffer
+    size_t ulStartFBAddr; //Start address of source Frame buffer
     uint32_t ulImgBufBaseAddr;//Base address of target image buffer
     
 }IT8951LdImgInfo;
